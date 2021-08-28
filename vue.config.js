@@ -20,7 +20,7 @@ module.exports = {
         changeOrigin: true //把请求头中的host配置为target
       },
       '/front': {
-        target: 'https://edufront.lagou.com',
+        target: 'http://edufront.lagou.com',
         changeOrigin: true
       }
     }

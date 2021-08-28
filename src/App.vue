@@ -1,7 +1,5 @@
 <template>
   <div id="app">
-    <h1>title</h1>
-    <p class="text">test</p>
     <!--  根路由出口-->
     <router-view/>
   </div>

@@ -53,18 +53,18 @@
   </div>
 </template>
 <script lang="ts">
-  import Vue from 'vue'
+import Vue from 'vue'
 
-  export default Vue.extend({
-    name: 'AppAside',
-    methods: {
-      handleOpen(key: string, keyPath: string): void {
-        console.log(key, keyPath)
-      },
-      handleClose(key: string, keyPath: string): void {
-        console.log(key, keyPath)
-      }
+export default Vue.extend({
+  name: 'AppAside',
+  methods: {
+    handleOpen (key: string, keyPath: string): void {
+      console.log(key, keyPath)
+    },
+    handleClose (key: string, keyPath: string): void {
+      console.log(key, keyPath)
     }
-  })
+  }
+})
 </script>
 <style lang="scss" scoped></style>
