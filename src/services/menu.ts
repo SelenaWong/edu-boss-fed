@@ -35,3 +35,11 @@ export const deleteMenus = (id: number):Promise<any> => {
     url: `/boss/menu/${id}`
   })
 }
+
+export const getMenuNodeList = ():Promise<any> => {
+  return request({
+    method: 'GET',
+    url: '/boss/menu/getMenuNodeList'
+  })
+}
+
