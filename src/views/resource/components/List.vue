@@ -100,7 +100,7 @@
 import Vue from 'vue'
 import { getResourcePage } from '@/services/resource.ts'
 import { getResourceCategories } from '@/services/resource-category.ts'
-import { Form } from "element-ui"
+import { Form } from 'element-ui'
 
 export default Vue.extend({
   name: 'ResourceList',
@@ -116,7 +116,7 @@ export default Vue.extend({
         size: 10
       },
       totalCount: 0,
-      isLoading: true //加载状态
+      isLoading: true // 加载状态
     }
   },
   created () {
