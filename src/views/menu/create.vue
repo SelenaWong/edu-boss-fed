@@ -46,10 +46,10 @@
 </template>
 <script lang="ts">
 import Vue from 'vue'
-import {createOrUpdateMenu, getEditMenuInfo} from '@/services/menu'
+import { createOrUpdateMenu, getEditMenuInfo } from '@/services/menu'
 export default Vue.extend({
   name: 'MenuCreate',
-  data() {
+  data () {
     return {
       form: {
         parentId: -1, // 表示没有上级菜单
@@ -63,25 +63,24 @@ export default Vue.extend({
       parentMenuList: []
     }
   },
-  created() {
+  created () {
     this.loadMenuInfo()
   },
   methods: {
-    async loadMenuInfo() {
-      const {data} = await getEditMenuInfo()
+    async loadMenuInfo () {
+      const { data } = await getEditMenuInfo()
       if (data.code === '000000') {
         this.parentMenuList = data.data.parentMenuList
       }
     },
-    async onSubmit() {
+    async onSubmit () {
       // 1.表单验证
       // 2.验证通过，提交表单
-      const {data} = await createOrUpdateMenu(this.form)
+      const { data } = await createOrUpdateMenu(this.form)
       if (data.code === '000000') {
         this.$message.success('提交成功')
         this.$router.back()
       }
-      console.log(data)
     }
   }
 })

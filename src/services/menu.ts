@@ -11,6 +11,7 @@ export const createOrUpdateMenu = (data: any):Promise<any> => {
   })
 }
 
+// 获取菜单信息
 export const getEditMenuInfo = (id = -1):Promise<any> => {
   return request({
     method: 'GET',
@@ -18,5 +19,12 @@ export const getEditMenuInfo = (id = -1):Promise<any> => {
     params: {
       id
     }
+  })
+}
+
+export const getAllMenus = ():Promise<any> => {
+  return request({
+    method: 'GET',
+    url: '/boss/menu/getAll'
   })
 }
