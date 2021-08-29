@@ -1,6 +1,6 @@
 import axios from 'axios'
 import store from '@/store'
-import {Message} from 'element-ui'
+import { Message } from 'element-ui'
 import router from '@/router'
 import qs from 'qs'
 
@@ -8,7 +8,7 @@ const request = axios.create({
   // 配置选项
 })
 
-function redirectLogin() {
+function redirectLogin () {
   router.push({
     name: 'login',
     query: {
@@ -17,7 +17,7 @@ function redirectLogin() {
   })
 }
 
-function refreshToken() {
+function refreshToken () {
   return axios.create()({
     method: 'POST',
     url: '/front/user/refresh_token',
@@ -30,7 +30,7 @@ function refreshToken() {
 // 请求拦截器
 request.interceptors.request.use(function (config) {
   // 通过改写config配置信息，实现业务功能的统一处理
-  const {user} = store.state
+  const { user } = store.state
   if (user?.access_token) {
     config.headers.Authorization = user.access_token
   }
@@ -48,10 +48,10 @@ request.interceptors.response.use(function (response) {
   // 如果是自定义错误状态码， 错误处理就写在这里
   return response
 }, async function (error) { // 超出2xx状态码执行到这里
-                            // console.dir(error)
-                            // 如果是使用HTTP状态码，错误处理写在这里
+  // console.dir(error)
+  // 如果是使用HTTP状态码，错误处理写在这里
   if (error.response) { // 请求发出去收到响应了，但是状态码超出了2xx范围
-    const {status} = error.response
+    const { status } = error.response
     if (status === 400) {
       Message.error('请求参数错误')
     } else if (status === 401) {
@@ -74,7 +74,7 @@ request.interceptors.response.use(function (response) {
           store.commit('setUser', res.data.content)
           console.log(error.config) // 失败请求的配置信息
           // 把requests队列中的请求重新发出去
-          requests.forEach( cb => cb())
+          requests.forEach(cb => cb())
           // 重置request数组
           requests = []
           return request(error.config) // 重新提交上次的失败请求
