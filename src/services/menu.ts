@@ -12,7 +12,7 @@ export const createOrUpdateMenu = (data: any):Promise<any> => {
 }
 
 // 获取菜单信息
-export const getEditMenuInfo = (id = -1):Promise<any> => {
+export const getEditMenuInfo = (id: string | number):Promise<any> => {
   return request({
     method: 'GET',
     url: '/boss/menu/getEditMenuInfo',

@@ -38,7 +38,7 @@
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="onSubmit">提交</el-button>
-          <el-button>重置</el-button>
+          <el-button v-if="!isEdit">重置</el-button>
         </el-form-item>
       </el-form>
     </el-card>
@@ -74,9 +74,12 @@ export default Vue.extend({
   },
   methods: {
     async loadMenuInfo () {
-      const { data } = await getEditMenuInfo()
+      const { data } = await getEditMenuInfo(this.$route.params?.id || -1)
       if (data.code === '000000') {
         this.parentMenuList = data.data.parentMenuList
+        if (data.data.menuInfo) {
+          this.form = data.data.menuInfo
+        }
       }
     },
     async onSubmit () {
