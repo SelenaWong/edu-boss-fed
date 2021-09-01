@@ -43,27 +43,19 @@
         </div>
         <div v-show="activeStep===1">
           <el-form-item label="课程封面">
-            <!--            upload 上传文件组件，支持自动上传，只需要把上传需要参数配置下就可以了-->
-            <el-upload
-              class="avatar-uploader"
-              action="https://jsonplaceholder.typicode.com/posts/"
-              :show-file-list="false"
-              :before-upload="beforeAvatarUpload"
-              :http-request="handleUpload">
-              <img v-if="course.courseListImg" :src="course.courseListImg" class="avatar">
-              <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-            </el-upload>
+<!--            upload 上传文件组件，支持自动上传，只需要把上传需要参数配置下就可以了-->
+<!--            1.组件需要根据绑定的数据进行图片预览-->
+<!--            2.组件需要把上传成功的图片地址同步到绑定的数据中-->
+<!--            v-model的本质是父子组件通信-->
+<!--            1. 它会给子组件传递一个名字叫value的数据（Props）-->
+<!--            2. 默认监听input事件，修改绑定的数据(自定义事件)-->
+            <course-image
+              v-model="course.courseListImg"/>
           </el-form-item>
-          <el-form-item label="介绍封面">
-            <el-upload
-              class="avatar-uploader"
-              action="https://jsonplaceholder.typicode.com/posts/"
-              :show-file-list="false"
-              :before-upload="beforeAvatarUpload"
-              :http-request="handleUploadCover">
-              <img v-if="course.courseImgUrl" :src="course.courseImgUrl" class="avatar">
-              <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-            </el-upload>
+          <el-form-item label="解锁封面">
+            <course-image
+              :limit="5"
+              v-model="course.courseImgUrl"/>
           </el-form-item>
         </div>
         <div v-show="activeStep===2">
@@ -144,148 +136,91 @@
   </div>
 </template>
 <script lang="ts">
-  import Vue from 'vue'
-  import {uploadCourseImage} from '@/services/course'
-  // import { saveOrUpdateCourse } from '@/services/course'
+import Vue from 'vue'
+import CourseImage from './components/CourseImage.vue'
+// import { saveOrUpdateCourse } from '@/services/course'
 
-  export default Vue.extend({
-    name: 'CourseCreate',
-    data() {
-      return {
-        activeStep: 0,
-        steps: [
-          {
-            title: '基本信息',
-            icon: 'el-icon-edit'
-          },
-          {
-            title: '课程封面',
-            icon: 'el-icon-upload'
-          },
-          {
-            title: '销售信息',
-            icon: 'el-icon-picture'
-          },
-          {
-            title: '秒杀活动',
-            icon: 'el-icon-picture'
-          },
-          {
-            title: '课程详情',
-            icon: 'el-icon-picture'
-          }
-        ],
-        form: {
-          sort: 1
+export default Vue.extend({
+  name: 'CourseCreate',
+  components: {
+    CourseImage
+  },
+  data () {
+    return {
+      activeStep: 0,
+      steps: [
+        {
+          title: '基本信息',
+          icon: 'el-icon-edit'
         },
-        imageUrl: '',
-        isSeckill: false,
-        course: {
+        {
+          title: '课程封面',
+          icon: 'el-icon-upload'
+        },
+        {
+          title: '销售信息',
+          icon: 'el-icon-picture'
+        },
+        {
+          title: '秒杀活动',
+          icon: 'el-icon-picture'
+        },
+        {
+          title: '课程详情',
+          icon: 'el-icon-picture'
+        }
+      ],
+      form: {
+        sort: 1
+      },
+      imageUrl: '',
+      isSeckill: false,
+      course: {
+        id: 0,
+        courseName: '',
+        brief: '',
+        teacherDTO: {
           id: 0,
-          courseName: '',
-          brief: '',
-          teacherDTO: {
-            id: 0,
-            courseId: 0,
-            teacherName: '',
-            teacherHeadPicUrl: '',
-            position: '',
-            description: ''
-          },
-          courseDescriptionMarkDown: '',
-          price: 0,
-          discounts: 0,
-          priceTag: '',
-          previewFirstField: '',
-          previewSecondField: '',
-          discountsTag: '',
-          courseListImg: '',
-          courseImgUrl: '',
-          sortNum: 0,
-          status: 0,
-          sales: 0,
-          activityCourse: true,
-          activityCourseDTO: {
-            id: 0,
-            courseId: 0,
-            beginTime: '',
-            endTime: '',
-            amount: 0,
-            stock: 0
-          }
+          courseId: 0,
+          teacherName: '',
+          teacherHeadPicUrl: '',
+          position: '',
+          description: ''
+        },
+        courseDescriptionMarkDown: '',
+        price: 0,
+        discounts: 0,
+        priceTag: '',
+        previewFirstField: '',
+        previewSecondField: '',
+        discountsTag: '',
+        courseListImg: '',
+        courseImgUrl: '',
+        sortNum: 0,
+        status: 0,
+        sales: 0,
+        activityCourse: true,
+        activityCourseDTO: {
+          id: 0,
+          courseId: 0,
+          beginTime: '',
+          endTime: '',
+          amount: 0,
+          stock: 0
         }
-      }
-    },
-    methods: {
-      handleChangeSort(event: any) {
-        console.log(event)
-      },
-
-      beforeAvatarUpload(file: any) {
-        const isJPG = file.type === 'image/jpeg'
-        const isLt2M = file.size / 1024 / 1024 < 2
-
-        if (!isJPG) {
-          this.$message.error('上传头像图片只能是 JPG 格式!')
-        }
-        if (!isLt2M) {
-          this.$message.error('上传头像图片大小不能超过 2MB!')
-        }
-        return isJPG && isLt2M
-      },
-      async handleUpload(options: any) {
-        console.log(options)
-        const fd = new FormData()
-        fd.append('file',options.file)
-        const { data } = await uploadCourseImage(fd, function(){
-
-        })
-        this.course.courseListImg = data.data.name
-        console.log(data)
-      },
-      async handleUploadCover(options: any) {
-        console.log(options)
-        const fd = new FormData()
-        fd.append('file',options.file)
-        // const { data } = await uploadCourseImage(fd, function(){
-        //
-        // })
-        // this.course.courseImgUrl = data.data.name
-        // console.log(data)
       }
     }
-  })
+  },
+  methods: {
+    handleChangeSort (event: any) {
+      console.log(event)
+    }
+  }
+})
 </script>
 
 <style lang="scss" scoped>
   .el-step {
     cursor: pointer;
-  }
-
-  ::v-deep .avatar-uploader .el-upload {
-    border: 1px dashed #d9d9d9;
-    border-radius: 6px;
-    cursor: pointer;
-    position: relative;
-    overflow: hidden;
-  }
-
-  ::v-deep .avatar-uploader .el-upload:hover {
-    border-color: #409EFF;
-  }
-
-  .avatar-uploader-icon {
-    font-size: 28px;
-    color: #8c939d;
-    width: 178px;
-    height: 178px;
-    line-height: 178px;
-    text-align: center;
-  }
-
-  .avatar {
-    width: 178px;
-    height: 178px;
-    display: block;
   }
 </style>
