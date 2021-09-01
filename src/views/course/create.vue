@@ -60,17 +60,17 @@
         </div>
         <div v-show="activeStep===2">
           <el-form-item label="售卖价格">
-            <el-input v-model="course.discounts">
+            <el-input v-model="course.discounts" type="number">
               <template slot="append">元</template>
             </el-input>
           </el-form-item>
           <el-form-item label="商品原价">
-            <el-input v-model="course.price">
+            <el-input v-model="course.price" type="number">
               <template slot="append">元</template>
             </el-input>
           </el-form-item>
           <el-form-item label="销量">
-            <el-input v-model="course.sales">
+            <el-input v-model="course.sales" type="number">
               <template slot="append">单</template>
             </el-input>
           </el-form-item>
@@ -82,33 +82,35 @@
         <div v-show="activeStep===3">
           <el-form-item label="限时秒杀开关">
             <el-switch
-              v-model="isSeckill"
+              v-model="course.activityCourse"
               active-color="#13ce66"
               inactive-color="#ff4949">
             </el-switch>
           </el-form-item>
-          <template v-if="isSeckill">
+          <template v-if="course.activityCourse">
             <el-form-item label="开始时间">
               <el-date-picker
                 v-model="course.activityCourseDTO.beginTime"
-                type="datetime"
-                placeholder="选择日期时间">
+                type="date"
+                placeholder="选择日期时间"
+                value-format="yyyy-MM-dd">
               </el-date-picker>
             </el-form-item>
             <el-form-item label="结束时间">
               <el-date-picker
                 v-model="course.activityCourseDTO.endTime"
-                type="datetime"
-                placeholder="选择日期时间">
+                type="date"
+                placeholder="选择日期时间"
+                value-format="yyyy-MM-dd">
               </el-date-picker>
             </el-form-item>
             <el-form-item label="秒杀价">
-              <el-input v-model="course.activityCourseDTO.amount">
+              <el-input v-model="course.activityCourseDTO.amount" type="number">
                 <template slot="append">元</template>
               </el-input>
             </el-form-item>
             <el-form-item label="秒杀库存">
-              <el-input v-model="course.activityCourseDTO.stock">
+              <el-input v-model="course.activityCourseDTO.stock" type="number">
                 <template slot="append">件</template>
               </el-input>
             </el-form-item>
@@ -120,6 +122,15 @@
               type="textarea"
               v-model="course.courseDescriptionMarkDown"
             ></el-input>
+          </el-form-item>
+          <el-form-item label="上架开关">
+            <el-switch
+              v-model="course.status"
+              :active-value="1"
+              :inactive-value="0"
+              active-color="#13ce66"
+              inactive-color="#ff4949">
+            </el-switch>
           </el-form-item>
           <el-form-item>
             <el-button type="primary" @click="handleSave">保存</el-button>
@@ -174,7 +185,6 @@ export default Vue.extend({
         sort: 1
       },
       imageUrl: '',
-      isSeckill: false,
       course: {
         // id: 0,
         courseName: '',
@@ -197,9 +207,9 @@ export default Vue.extend({
         courseListImg: '',
         courseImgUrl: '',
         sortNum: 0,
-        status: 0,
+        status: 0, // 0: 未发布， 1: 已发布
         sales: 0,
-        activityCourse: true,
+        activityCourse: false,
         activityCourseDTO: {
           // id: 0,
           // courseId: 0,
@@ -217,7 +227,7 @@ export default Vue.extend({
     },
     async handleSave () {
       const { data } = await saveOrUpdateCourse(this.course)
-      console.log(data)
+      this.$router.back()
     }
   }
 })
