@@ -22,52 +22,52 @@
 </template>
 
 <script lang="ts">
-  import Vue from 'vue'
-  import {uploadCourseImage} from '@/services/course'
+import Vue from 'vue'
+import { uploadCourseImage } from '@/services/course'
 
-  export default Vue.extend({
-    name: 'CourseImage',
-    props: {
-      value: {
-        type: String
-      },
-      limit: {
-        type: Number,
-        default: 2
-      }
+export default Vue.extend({
+  name: 'CourseImage',
+  props: {
+    value: {
+      type: String
     },
-    data() {
-      return {
-        isUploading: false,
-        percentage: 0
-      }
-    },
-    methods: {
-      beforeAvatarUpload(file: any) {
-        const isJPG = file.type === 'image/jpeg'
-        const isLt2M = file.size / 1024 / 1024 < this.limit
-
-        if (!isJPG) {
-          this.$message.error('上传头像图片只能是 JPG 格式!')
-        }
-        if (!isLt2M) {
-          this.$message.error(`上传头像图片大小不能超过 ${this.limit}MB!`)
-        }
-        return isJPG && isLt2M
-      },
-      async handleUpload(options: any) {
-        this.isUploading = true
-        const fd = new FormData()
-        fd.append('file', options.file)
-        const {data} = await uploadCourseImage(fd, (e) => {
-          this.percentage = Math.floor(e.loaded / e.total * 100)
-        })
-        this.isUploading = false
-        this.percentage = 0 // 不要忘记添加恢复初始值
-        this.$emit('input', data.data.name)
-      }
+    limit: {
+      type: Number,
+      default: 2
     }
-  })
+  },
+  data () {
+    return {
+      isUploading: false,
+      percentage: 0
+    }
+  },
+  methods: {
+    beforeAvatarUpload (file: any) {
+      const isJPG = file.type === 'image/jpeg'
+      const isLt2M = file.size / 1024 / 1024 < this.limit
+
+      if (!isJPG) {
+        this.$message.error('上传头像图片只能是 JPG 格式!')
+      }
+      if (!isLt2M) {
+        this.$message.error(`上传头像图片大小不能超过 ${this.limit}MB!`)
+      }
+      return isJPG && isLt2M
+    },
+    async handleUpload (options: any) {
+      this.isUploading = true
+      const fd = new FormData()
+      fd.append('file', options.file)
+      const { data } = await uploadCourseImage(fd, (e) => {
+        this.percentage = Math.floor(e.loaded / e.total * 100)
+      })
+      this.isUploading = false
+      this.percentage = 0 // 不要忘记添加恢复初始值
+      this.$emit('input', data.data.name)
+    }
+  }
+})
 </script>
 
 <style lang="scss" scoped>

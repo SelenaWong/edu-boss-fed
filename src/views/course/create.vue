@@ -122,7 +122,7 @@
             ></el-input>
           </el-form-item>
           <el-form-item>
-            <el-button type="primary">保存</el-button>
+            <el-button type="primary" @click="handleSave">保存</el-button>
           </el-form-item>
         </div>
         <el-form-item v-if="activeStep > 1 && activeStep< 4">
@@ -138,7 +138,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import CourseImage from './components/CourseImage.vue'
-// import { saveOrUpdateCourse } from '@/services/course'
+import { saveOrUpdateCourse } from '@/services/course'
 
 export default Vue.extend({
   name: 'CourseCreate',
@@ -176,12 +176,12 @@ export default Vue.extend({
       imageUrl: '',
       isSeckill: false,
       course: {
-        id: 0,
+        // id: 0,
         courseName: '',
         brief: '',
         teacherDTO: {
-          id: 0,
-          courseId: 0,
+          // id: 0,
+          // courseId: 0,
           teacherName: '',
           teacherHeadPicUrl: '',
           position: '',
@@ -201,8 +201,8 @@ export default Vue.extend({
         sales: 0,
         activityCourse: true,
         activityCourseDTO: {
-          id: 0,
-          courseId: 0,
+          // id: 0,
+          // courseId: 0,
           beginTime: '',
           endTime: '',
           amount: 0,
@@ -214,6 +214,10 @@ export default Vue.extend({
   methods: {
     handleChangeSort (event: any) {
       console.log(event)
+    },
+    async handleSave () {
+      const { data } = await saveOrUpdateCourse(this.course)
+      console.log(data)
     }
   }
 })
