@@ -1,6 +1,13 @@
 <template>
   <div class="course-image">
+    <el-progress
+      v-if="isUploading"
+      type="circle"
+      :percentage="percentage"
+      :width="178"
+      :status="percentage===100? 'success': undefined"/>
     <el-upload
+      v-else
       class="avatar-uploader"
       action="https://jsonplaceholder.typicode.com/posts/"
       :show-file-list="false"
@@ -15,60 +22,68 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { uploadCourseImage } from '@/services/course'
-export default Vue.extend({
-  name: 'CourseImage',
-  props: {
-    value: {
-      type: String
-    },
-    limit: {
-      type: Number,
-      default: 2
-    }
-  },
-  data () {
-    return {
-    }
-  },
-  methods: {
-    beforeAvatarUpload (file: any) {
-      const isJPG = file.type === 'image/jpeg'
-      const isLt2M = file.size / 1024 / 1024 < this.limit
+  import Vue from 'vue'
+  import {uploadCourseImage} from '@/services/course'
 
-      if (!isJPG) {
-        this.$message.error('上传头像图片只能是 JPG 格式!')
+  export default Vue.extend({
+    name: 'CourseImage',
+    props: {
+      value: {
+        type: String
+      },
+      limit: {
+        type: Number,
+        default: 2
       }
-      if (!isLt2M) {
-        this.$message.error(`上传头像图片大小不能超过 ${this.limit}MB!`)
-      }
-      return isJPG && isLt2M
     },
-    async handleUpload (options: any) {
-      const fd = new FormData()
-      fd.append('file', options.file)
-      const { data } = await uploadCourseImage(fd, function () {
-        console.log('test')
-      })
-      this.$emit('input', data.data.name)
+    data() {
+      return {
+        isUploading: false,
+        percentage: 0
+      }
+    },
+    methods: {
+      beforeAvatarUpload(file: any) {
+        const isJPG = file.type === 'image/jpeg'
+        const isLt2M = file.size / 1024 / 1024 < this.limit
+
+        if (!isJPG) {
+          this.$message.error('上传头像图片只能是 JPG 格式!')
+        }
+        if (!isLt2M) {
+          this.$message.error(`上传头像图片大小不能超过 ${this.limit}MB!`)
+        }
+        return isJPG && isLt2M
+      },
+      async handleUpload(options: any) {
+        this.isUploading = true
+        const fd = new FormData()
+        fd.append('file', options.file)
+        const {data} = await uploadCourseImage(fd, (e) => {
+          this.percentage = Math.floor(e.loaded / e.total * 100)
+        })
+        this.isUploading = false
+        this.percentage = 0 // 不要忘记添加恢复初始值
+        this.$emit('input', data.data.name)
+      }
     }
-  }
-})
+  })
 </script>
 
 <style lang="scss" scoped>
-::v-deep .avatar-uploader .el-upload {
+  ::v-deep .avatar-uploader .el-upload {
     border: 1px dashed #d9d9d9;
     border-radius: 6px;
     cursor: pointer;
     position: relative;
     overflow: hidden;
   }
-::v-deep .avatar-uploader .el-upload:hover {
+
+  ::v-deep .avatar-uploader .el-upload:hover {
     border-color: #409EFF;
   }
-.avatar-uploader-icon {
+
+  .avatar-uploader-icon {
     font-size: 28px;
     color: #8c939d;
     width: 178px;
@@ -76,7 +91,8 @@ export default Vue.extend({
     line-height: 178px;
     text-align: center;
   }
-.avatar {
+
+  .avatar {
     width: 178px;
     height: 178px;
     display: block;

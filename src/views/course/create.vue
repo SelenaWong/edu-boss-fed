@@ -54,7 +54,7 @@
           </el-form-item>
           <el-form-item label="解锁封面">
             <course-image
-              :limit="5"
+              :limit="10"
               v-model="course.courseImgUrl"/>
           </el-form-item>
         </div>
