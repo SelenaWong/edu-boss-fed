@@ -13,6 +13,7 @@ module.exports = {
     }
   },
   devServer: {
+    // 代理仅针对 npm run serve 运行的开发服务有效
     proxy: {
       '/boss': {
         target: 'http://eduboss.lagou.com',
