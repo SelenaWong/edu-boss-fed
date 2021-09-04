@@ -147,7 +147,7 @@
 import Vue from 'vue'
 import CourseImage from './CourseImage.vue'
 import TextEditor from '@/components/TextEditor/index.vue'
-import { saveOrUpdateCourse, getCourseById} from '@/services/course'
+import { saveOrUpdateCourse, getCourseById } from '@/services/course'
 import moment from 'moment'
 export default Vue.extend({
   name: 'CreatOrUpdateCourse',
@@ -229,7 +229,7 @@ export default Vue.extend({
       }
     }
   },
-  created (){
+  created () {
     if (this.isEdit) {
       this.loadCourse()
     }
